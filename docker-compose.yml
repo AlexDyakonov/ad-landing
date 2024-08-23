@@ -1,0 +1,7 @@
+services:
+  frontend:
+    ports:
+      - 80:80
+    build:
+      context: .
+      dockerfile: Dockerfile
