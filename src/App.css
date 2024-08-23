@@ -64,3 +64,22 @@
 .App-item a:hover {
   text-decoration: underline;
 }
+
+.styled-button {
+  background: none;
+  border: none; 
+  color: #76c9f0; 
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0; 
+  font-size: 0.9rem; 
+}
+
+.styled-button:hover {
+  color: white;
+  transform: scale(1.05); 
+}
+
+.styled-button:focus {
+  outline: none;
+}

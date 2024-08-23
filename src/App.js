@@ -8,6 +8,10 @@ function App() {
     setActiveSection(activeSection === section ? null : section);
   };
 
+  const openPdf = (url) => {
+    window.open(url, '_blank');
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -30,10 +34,10 @@ function App() {
           {activeSection === 'resume' && (
             <div>
               <p>
-                <a href="https://drive.google.com/file/d/1SHac1zo_jvKjTywFLPhYOMnH0R0ipJlw/view?usp=sharing" target="_blank" rel="noopener noreferrer">Resume (English)</a>
+                <button className="styled-button" onClick={() => openPdf('/pdf/CV_EN.pdf')}>Resume in English</button>
               </p>
               <p>
-                <a href="https://drive.google.com/file/d/1_WEcM5749pkUEXfP84J5osd-DNO8D0es/view?usp=sharing" target="_blank" rel="noopener noreferrer">Резюме (Русский)</a>
+                <button className="styled-button" onClick={() => openPdf('/pdf/CV_RU.pdf')}>Резюме на русском</button>
               </p>
             </div>
           )}
