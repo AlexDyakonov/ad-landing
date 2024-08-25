@@ -9,6 +9,6 @@
     "outDir": "./dist",
     "jsx": "react" 
   },
-  "include": ["src/**/*.ts", "src/index.tsx", "src/App.tsx"],
+  "include": ["src/**/*.ts", "src/index.tsx", "src/App.tsx", "src/components/createTextSprite.tsx"],
   "exclude": ["node_modules"]
 }

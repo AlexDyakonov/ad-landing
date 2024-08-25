@@ -1,10 +1,13 @@
-import React, { useRef, useEffect, MutableRefObject } from 'react';
+import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three-stdlib';
 import { OrbitControls } from 'three-stdlib';
+import { createTextSprite } from './createTextSprite';
+import { handleKeyDown as importedHandleKeyDown } from './handleKeyDown';
 
 const ThreeModel: React.FC = () => {
     const mountRef = useRef<HTMLDivElement | null>(null);
+    let angle = 0; 
 
     useEffect(() => {
         if (!mountRef.current) return;
@@ -26,25 +29,6 @@ const ThreeModel: React.FC = () => {
         const numModels = 4; 
         const radius = 5; 
         const models: THREE.Object3D[] = [];
-
-        function createTextSprite(text: string, model: THREE.Object3D): THREE.Sprite {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d')!;
-            context.font = 'Bold 40px Arial';
-            context.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            context.fillText(text, 50, 50);
-
-            const texture = new THREE.Texture(canvas);
-            texture.needsUpdate = true;
-
-            const material = new THREE.SpriteMaterial({ map: texture });
-            const sprite = new THREE.Sprite(material);
-            sprite.scale.set(0.5, 0.25, 1.0);
-            sprite.position.set(0, 2, 0);
-
-            model.add(sprite);
-            return sprite;
-        }
 
         for (let i = 0; i < numModels; i++) {
             const angle = (i / numModels) * Math.PI * 2;
@@ -73,27 +57,11 @@ const ThreeModel: React.FC = () => {
         camera.position.set(0, 0, 8);
         camera.lookAt(scene.position);
 
-        let angle = 0;
-
-        const handleKeyDown = (event: KeyboardEvent) => {
-            const moveDistance = 0.05;
-            switch (event.key) {
-                case 'ArrowLeft':
-                    angle -= moveDistance;
-                    break;
-                case 'ArrowRight':
-                    angle += moveDistance;
-                    break;
-            }
-
-            models.forEach((model, index) => {
-                const posX = Math.cos(angle + index * Math.PI / 2) * radius;
-                const posY = Math.sin(angle + index * Math.PI / 2) * radius;
-                model.position.set(posX, 0, posY);
-            });
+        const keyDownHandler = (event: KeyboardEvent) => {
+            angle = importedHandleKeyDown(event, models, radius, angle);
         };
 
-        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keydown', keyDownHandler);
 
         const animate = function () {
             requestAnimationFrame(animate);
@@ -108,7 +76,7 @@ const ThreeModel: React.FC = () => {
                 mountRef.current.removeChild(renderer.domElement);
             }
             renderer.dispose();
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keydown', keyDownHandler);
         };
     }, []);
 
