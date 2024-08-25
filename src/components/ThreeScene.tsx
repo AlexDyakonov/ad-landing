@@ -1,14 +1,15 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three-stdlib';
 import { OrbitControls } from 'three-stdlib';
 import { createTextSprite } from './createTextSprite';
 import { handleKeyDown as importedHandleKeyDown } from './handleKeyDown';
+import { loadModels } from '../data/floppyData';
 import { FloppyDisk } from '../types/FloppyDisk';
 
 const ThreeModel: React.FC = () => {
     const mountRef = useRef<HTMLDivElement | null>(null);
-    let angle = 0; 
+    const [models, setModels] = useState<FloppyDisk[]>([]);
+    const angleRef = useRef(0);
 
     useEffect(() => {
         if (!mountRef.current) return;
@@ -26,49 +27,37 @@ const ThreeModel: React.FC = () => {
         const ambientLight = new THREE.AmbientLight(0x404040, 3);
         scene.add(ambientLight);
 
-        const loader = new GLTFLoader();
-        const numModels = 4; 
-        const radius = 5; 
-        const models: FloppyDisk[] = [];
+        loadModels().then((loadedModels) => {
+            setModels(loadedModels);
 
-        for (let i = 0; i < numModels; i++) {
-            const angle = (i / numModels) * Math.PI * 2;
-            const posX = Math.cos(angle) * radius;
-            const posY = Math.sin(angle) * radius;
-            loader.load(
-                '/models/floppy.glb',
-                (gltf) => {
-                    const model = gltf.scene;
-                    model.position.set(posX, 0, posY);
-                    model.scale.set(1, 1, 1);
-                    scene.add(model);
+            const numModels = loadedModels.length;
+            const radius = 5; 
 
-                    const floppyDisk: FloppyDisk = {
-                        model: model,
-                        title: `FloppyDisk ${i + 1}`,
-                        text: `This is floppy disk number ${i + 1}`, 
-                    };
-                    models.push(floppyDisk);
+            loadedModels.forEach((floppyDisk, i) => {
+                const angle = (i / numModels) * Math.PI * 2;
+                const posX = Math.cos(angle) * radius;
+                const posY = Math.sin(angle) * radius;
+                floppyDisk.model.position.set(posX, 0, posY);
+                floppyDisk.model.scale.set(1, 1, 1);
+                scene.add(floppyDisk.model);
+                createTextSprite(floppyDisk.title, floppyDisk.model);
+            });
 
-                    createTextSprite(floppyDisk.title, floppyDisk.model); 
-                },
-                undefined,
-                (error) => {
-                    console.error(`An error happened while loading model ${i + 1}`, error);
-                }
-            );
-        }
+            const keyDownHandler = (event: KeyboardEvent) => {
+                angleRef.current = importedHandleKeyDown(event, loadedModels.map(m => m.model), radius, angleRef.current);
+            };
+
+            window.addEventListener('keydown', keyDownHandler);
+
+            return () => {
+                window.removeEventListener('keydown', keyDownHandler);
+            };
+        });
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         camera.position.set(0, 0, 8);
         camera.lookAt(scene.position);
-
-        const keyDownHandler = (event: KeyboardEvent) => {
-            angle = importedHandleKeyDown(event, models.map(m => m.model), radius, angle);
-        };
-
-        window.addEventListener('keydown', keyDownHandler);
 
         const animate = function () {
             requestAnimationFrame(animate);
@@ -83,7 +72,6 @@ const ThreeModel: React.FC = () => {
                 mountRef.current.removeChild(renderer.domElement);
             }
             renderer.dispose();
-            window.removeEventListener('keydown', keyDownHandler);
         };
     }, []);
 

@@ -17,9 +17,11 @@ export const handleKeyDown = (
             break;
     }
 
+    const angleIncrement = (Math.PI * 2) / models.length;
+
     models.forEach((model, index) => {
-        const posX = Math.cos(angle + index * Math.PI / 2) * radius;
-        const posY = Math.sin(angle + index * Math.PI / 2) * radius;
+        const posX = Math.cos(angle + index * angleIncrement) * radius;
+        const posY = Math.sin(angle + index * angleIncrement) * radius;
         model.position.set(posX, 0, posY);
     });
 
