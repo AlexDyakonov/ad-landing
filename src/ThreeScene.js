@@ -21,7 +21,26 @@ const ThreeModel = () => {
         scene.add(ambientLight);
 
         const loader = new GLTFLoader();
-        const positions = [-3, -1, 1, 3];
+        const positions = [-3, -1, 1, 3]; 
+
+        function createTextSprite(text, position) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            context.font = 'Bold 40px Arial';
+            context.fillStyle = 'rgba(255, 255, 255, 1.0)';
+            context.fillText(text, 50, 50);
+
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+
+            const material = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(material);
+            sprite.scale.set(0.5, 0.25, 1.0); 
+            sprite.position.copy(position.clone().add(new THREE.Vector3(0, 2, 0)));
+
+            return sprite;
+        }
+
         positions.forEach((posX, index) => {
             loader.load(
                 '/models/floppy.glb',
@@ -30,6 +49,9 @@ const ThreeModel = () => {
                     model.position.set(posX, 0, 0);
                     model.scale.set(1, 1, 1);
                     scene.add(model);
+
+                    const sprite = createTextSprite(`Object ${index + 1}`, new THREE.Vector3(posX, 0, 0));
+                    scene.add(sprite);
                 },
                 undefined,
                 (error) => {
@@ -79,7 +101,7 @@ const ThreeModel = () => {
         };
     }, []);
 
-    return <div ref={mountRef} />;
+    return <div ref={mountRef} style={{ width: '100%', height: '100%' }} />;
 };
 
 export default ThreeModel;
