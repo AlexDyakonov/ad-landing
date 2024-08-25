@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three-stdlib';
 import { OrbitControls } from 'three-stdlib';
 import { createTextSprite } from './createTextSprite';
 import { handleKeyDown as importedHandleKeyDown } from './handleKeyDown';
+import { FloppyDisk } from '../types/FloppyDisk';
 
 const ThreeModel: React.FC = () => {
     const mountRef = useRef<HTMLDivElement | null>(null);
@@ -28,7 +29,7 @@ const ThreeModel: React.FC = () => {
         const loader = new GLTFLoader();
         const numModels = 4; 
         const radius = 5; 
-        const models: THREE.Object3D[] = [];
+        const models: FloppyDisk[] = [];
 
         for (let i = 0; i < numModels; i++) {
             const angle = (i / numModels) * Math.PI * 2;
@@ -41,9 +42,15 @@ const ThreeModel: React.FC = () => {
                     model.position.set(posX, 0, posY);
                     model.scale.set(1, 1, 1);
                     scene.add(model);
-                    models.push(model);
 
-                    createTextSprite(`Object ${i + 1}`, model);
+                    const floppyDisk: FloppyDisk = {
+                        model: model,
+                        title: `FloppyDisk ${i + 1}`,
+                        text: `This is floppy disk number ${i + 1}`, 
+                    };
+                    models.push(floppyDisk);
+
+                    createTextSprite(floppyDisk.title, floppyDisk.model); 
                 },
                 undefined,
                 (error) => {
@@ -58,7 +65,7 @@ const ThreeModel: React.FC = () => {
         camera.lookAt(scene.position);
 
         const keyDownHandler = (event: KeyboardEvent) => {
-            angle = importedHandleKeyDown(event, models, radius, angle);
+            angle = importedHandleKeyDown(event, models.map(m => m.model), radius, angle);
         };
 
         window.addEventListener('keydown', keyDownHandler);
