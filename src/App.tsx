@@ -1,7 +1,7 @@
 import React from 'react';
 import ThreeScene from './ThreeScene';
 
-function App() {
+const App: React.FC = () => {
     return (
         <div className="App">
             <ThreeScene />

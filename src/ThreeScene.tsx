@@ -1,12 +1,14 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, MutableRefObject } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three-stdlib';
 import { OrbitControls } from 'three-stdlib';
 
-const ThreeModel = () => {
-    const mountRef = useRef(null);
+const ThreeModel: React.FC = () => {
+    const mountRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
+        if (!mountRef.current) return;
+
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
@@ -23,11 +25,11 @@ const ThreeModel = () => {
         const loader = new GLTFLoader();
         const numModels = 4; 
         const radius = 5; 
-        const models = [];
+        const models: THREE.Object3D[] = [];
 
-        function createTextSprite(text, model) {
+        function createTextSprite(text: string, model: THREE.Object3D): THREE.Sprite {
             const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
+            const context = canvas.getContext('2d')!;
             context.font = 'Bold 40px Arial';
             context.fillStyle = 'rgba(255, 255, 255, 1.0)';
             context.fillText(text, 50, 50);
@@ -73,7 +75,7 @@ const ThreeModel = () => {
 
         let angle = 0;
 
-        const handleKeyDown = (event) => {
+        const handleKeyDown = (event: KeyboardEvent) => {
             const moveDistance = 0.05;
             switch (event.key) {
                 case 'ArrowLeft':
@@ -102,7 +104,9 @@ const ThreeModel = () => {
         animate();
 
         return () => {
-            mountRef.current.removeChild(renderer.domElement);
+            if (mountRef.current) {
+                mountRef.current.removeChild(renderer.domElement);
+            }
             renderer.dispose();
             window.removeEventListener('keydown', handleKeyDown);
         };
