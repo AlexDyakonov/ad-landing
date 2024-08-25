@@ -21,9 +21,11 @@ const ThreeModel = () => {
         scene.add(ambientLight);
 
         const loader = new GLTFLoader();
-        const positions = [-3, -1, 1, 3]; 
+        const numModels = 4; 
+        const radius = 5; 
+        const models = [];
 
-        function createTextSprite(text, position) {
+        function createTextSprite(text, model) {
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             context.font = 'Bold 40px Arial';
@@ -35,53 +37,58 @@ const ThreeModel = () => {
 
             const material = new THREE.SpriteMaterial({ map: texture });
             const sprite = new THREE.Sprite(material);
-            sprite.scale.set(0.5, 0.25, 1.0); 
-            sprite.position.copy(position.clone().add(new THREE.Vector3(0, 2, 0)));
+            sprite.scale.set(0.5, 0.25, 1.0);
+            sprite.position.set(0, 2, 0);
 
+            model.add(sprite);
             return sprite;
         }
 
-        positions.forEach((posX, index) => {
+        for (let i = 0; i < numModels; i++) {
+            const angle = (i / numModels) * Math.PI * 2;
+            const posX = Math.cos(angle) * radius;
+            const posY = Math.sin(angle) * radius;
             loader.load(
                 '/models/floppy.glb',
                 (gltf) => {
                     const model = gltf.scene;
-                    model.position.set(posX, 0, 0);
+                    model.position.set(posX, 0, posY);
                     model.scale.set(1, 1, 1);
                     scene.add(model);
+                    models.push(model);
 
-                    const sprite = createTextSprite(`Object ${index + 1}`, new THREE.Vector3(posX, 0, 0));
-                    scene.add(sprite);
+                    createTextSprite(`Object ${i + 1}`, model);
                 },
                 undefined,
                 (error) => {
-                    console.error(`An error happened while loading model ${index + 1}`, error);
+                    console.error(`An error happened while loading model ${i + 1}`, error);
                 }
             );
-        });
+        }
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        camera.position.z = 5;
+        camera.position.set(0, 0, 8);
+        camera.lookAt(scene.position);
+
+        let angle = 0;
 
         const handleKeyDown = (event) => {
-            const moveDistance = 0.5;
+            const moveDistance = 0.05;
             switch (event.key) {
-                case 'ArrowUp':
-                    camera.position.y += moveDistance;
-                    break;
-                case 'ArrowDown':
-                    camera.position.y -= moveDistance;
-                    break;
                 case 'ArrowLeft':
-                    camera.position.x -= moveDistance;
+                    angle -= moveDistance;
                     break;
                 case 'ArrowRight':
-                    camera.position.x += moveDistance;
-                    break;
-                default:
+                    angle += moveDistance;
                     break;
             }
+
+            models.forEach((model, index) => {
+                const posX = Math.cos(angle + index * Math.PI / 2) * radius;
+                const posY = Math.sin(angle + index * Math.PI / 2) * radius;
+                model.position.set(posX, 0, posY);
+            });
         };
 
         window.addEventListener('keydown', handleKeyDown);
