@@ -1,29 +1,34 @@
 import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js';
 
 export const handleKeyDown = (
     event: KeyboardEvent,
     models: THREE.Object3D[],
     radius: number,
-    angle: number
+    angle: number 
 ) => {
-    const moveDistance = 0.05;
+    const moveDistance = Math.PI * 2 / models.length;
+    let newAngle = angle; 
 
     switch (event.key) {
         case 'ArrowLeft':
-            angle -= moveDistance;
+            newAngle -= moveDistance;
             break;
         case 'ArrowRight':
-            angle += moveDistance;
+            newAngle += moveDistance;
             break;
     }
 
-    const angleIncrement = (Math.PI * 2) / models.length;
-
     models.forEach((model, index) => {
-        const posX = Math.cos(angle + index * angleIncrement) * radius;
-        const posY = Math.sin(angle + index * angleIncrement) * radius;
-        model.position.set(posX, 0, posY);
+        const targetAngle = newAngle + index * moveDistance;
+        const posX = Math.cos(targetAngle) * radius;
+        const posY = Math.sin(targetAngle) * radius;
+
+        new TWEEN.Tween(model.position)
+            .to({ x: posX, z: posY }, 500)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .start();
     });
 
-    return angle;
+    return newAngle; 
 };
