@@ -9,11 +9,11 @@ interface FloppyDiskData extends Omit<FloppyDisk, 'model'> {}
 
 export const loadModels = (): Promise<FloppyDisk[]> => {
     const modelData: FloppyDiskData[] = [
-        { title: 'Floppy Disk 1', text: 'This is the first floppy disk', isPrimary: true },
-        { title: 'Floppy Disk 2', text: 'This is the second floppy disk', isPrimary: false },
-        { title: 'Floppy Disk 3', text: 'This is the third floppy disk', isPrimary: false },
-        { title: 'Floppy Disk 4', text: 'This is the fourth floppy disk', isPrimary: false },
-        { title: 'Floppy Disk 5', text: 'This is the fifth floppy disk', isPrimary: false },
+        { title: 'Main Info', text: 'This is the first floppy disk', isPrimary: true },
+        { title: 'Technologies and Tools', text: 'This is the second floppy disk', isPrimary: false },
+        { title: 'Projects ', text: 'This is the third floppy disk', isPrimary: false },
+        { title: 'Shamp.Dev', text: 'This is the fourth floppy disk', isPrimary: false },
+        { title: 'Hobbies', text: 'This is the fifth floppy disk', isPrimary: false },
     ];
 
     const promises = modelData.map((data, i) =>
