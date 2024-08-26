@@ -5,13 +5,15 @@ const loader = new GLTFLoader();
 
 const preloadedModels: FloppyDisk[] = [];
 
+interface FloppyDiskData extends Omit<FloppyDisk, 'model'> {}
+
 export const loadModels = (): Promise<FloppyDisk[]> => {
-    const modelData: Omit<FloppyDisk, 'model'>[] = [
-        { title: 'Floppy Disk 1', text: 'This is the first floppy disk' },
-        { title: 'Floppy Disk 2', text: 'This is the second floppy disk' },
-        { title: 'Floppy Disk 3', text: 'This is the third floppy disk' },
-        { title: 'Floppy Disk 4', text: 'This is the fourth floppy disk' },
-        { title: 'Floppy Disk 5', text: 'This is the fifth floppy disk' },
+    const modelData: FloppyDiskData[] = [
+        { title: 'Floppy Disk 1', text: 'This is the first floppy disk', isPrimary: true },
+        { title: 'Floppy Disk 2', text: 'This is the second floppy disk', isPrimary: false },
+        { title: 'Floppy Disk 3', text: 'This is the third floppy disk', isPrimary: false },
+        { title: 'Floppy Disk 4', text: 'This is the fourth floppy disk', isPrimary: false },
+        { title: 'Floppy Disk 5', text: 'This is the fifth floppy disk', isPrimary: false },
     ];
 
     const promises = modelData.map((data, i) =>
@@ -20,8 +22,8 @@ export const loadModels = (): Promise<FloppyDisk[]> => {
                 '/models/floppy.glb',
                 (gltf) => {
                     const model = gltf.scene;
-                    resolve({ model, title: data.title, text: data.text });
-                    console.log("Loaded floppy disk", i)
+                    resolve({ ...data, model });
+                    console.log("Loaded floppy disk", i);
                 },
                 undefined,
                 (error) => reject(error)

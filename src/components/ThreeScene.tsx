@@ -16,7 +16,7 @@ const ThreeModel: React.FC = () => {
         if (!mountRef.current) return;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         mountRef.current.appendChild(renderer.domElement);
@@ -31,20 +31,21 @@ const ThreeModel: React.FC = () => {
         loadModels().then((loadedModels) => {
             setModels(loadedModels);
 
-            const radius = 5;
+            const radius = 4;
             loadedModels.forEach((floppyDisk, i) => {
                 const angle = (i / loadedModels.length) * Math.PI * 2;
                 const posX = Math.cos(angle) * radius;
                 const posY = Math.sin(angle) * radius;
                 floppyDisk.model.position.set(posX, 0, posY);
-                floppyDisk.model.rotation.y = Math.PI / 6;
+                floppyDisk.model.rotation.y = 60 * (Math.PI / 180);
                 createTextSprite(floppyDisk.title, floppyDisk.model);
                 scene.add(floppyDisk.model);
             });
 
             const keyDownHandler = (event: KeyboardEvent) => {
-                angleRef.current = importedHandleKeyDown(event, loadedModels.map(m => m.model), radius, angleRef.current);
+                angleRef.current = importedHandleKeyDown(event, loadedModels, radius, angleRef.current);
             };
+            
 
             window.addEventListener('keydown', keyDownHandler);
 
@@ -55,8 +56,7 @@ const ThreeModel: React.FC = () => {
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        camera.position.set(2, 0, 7);
-        camera.lookAt(scene.position);
+        camera.position.set(5.5, 0, 2.3);
 
         const animate = function () {
             requestAnimationFrame(animate);
