@@ -29,7 +29,6 @@ const ThreeModel: React.FC = () => {
 
         loadModels().then((loadedModels) => {
             setModels(loadedModels);
-            setLoading(false); 
 
             const radius = 4;
             loadedModels.forEach((floppyDisk, i) => {
@@ -41,6 +40,9 @@ const ThreeModel: React.FC = () => {
                 createTextSprite(floppyDisk.title, floppyDisk.model);
                 scene.add(floppyDisk.model);
             });
+
+            setLoading(false); 
+
 
             const keyDownHandler = (event: KeyboardEvent) => {
                 if (event.key === 'ArrowRight') {
