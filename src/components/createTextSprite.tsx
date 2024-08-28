@@ -10,17 +10,20 @@ export function createTextSprite(text: string, model: THREE.Object3D): THREE.Spr
 
     const textMetrics = context.measureText(text);
     const textWidth = textMetrics.width;
-    const textHeight = fontSize; 
+    const textHeight = fontSize;
 
     const padding = 20;
-    canvas.width = textWidth + padding * 2;
-    canvas.height = textHeight + padding * 2;
+    const scaleFactor = 4;
 
+    canvas.width = (textWidth + padding * 2) * scaleFactor;
+    canvas.height = (textHeight + padding * 2) * scaleFactor;
+
+    context.scale(scaleFactor, scaleFactor);
     context.font = font;
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillStyle = 'rgba(0, 0, 0, 1.0)';
-    context.fillText(text, canvas.width / 2, canvas.height / 2);
+    context.fillText(text, (canvas.width / scaleFactor) / 2, (canvas.height / scaleFactor) / 2);
 
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
@@ -31,8 +34,8 @@ export function createTextSprite(text: string, model: THREE.Object3D): THREE.Spr
     const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
     const sprite = new THREE.Sprite(material);
 
-    const spriteScaleFactor = 0.01; 
-    sprite.scale.set(canvas.width * spriteScaleFactor, canvas.height * spriteScaleFactor, 1);
+    const spriteScaleFactor = 0.01;
+    sprite.scale.set((canvas.width / scaleFactor) * spriteScaleFactor, (canvas.height / scaleFactor) * spriteScaleFactor, 1);
 
     sprite.position.set(0, 1.5, 0);
 
