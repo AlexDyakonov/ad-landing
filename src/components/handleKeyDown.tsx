@@ -2,15 +2,15 @@ import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
 import { FloppyDisk } from '../types/FloppyDisk';
 
-
 export const handleKeyDown = (
     event: KeyboardEvent,
-    models: FloppyDisk[], 
+    models: FloppyDisk[],
+    primaryDiskIndex: number,
     radius: number,
-    angle: number 
+    angle: number
 ) => {
     const moveDistance = Math.PI * 2 / models.length;
-    let newAngle = angle; 
+    let newAngle = angle;
 
     switch (event.key) {
         case 'ArrowLeft':
@@ -31,33 +31,52 @@ export const handleKeyDown = (
             .easing(TWEEN.Easing.Quadratic.Out)
             .start();
 
-        if (!disk.isPrimary) {
+        if (index === primaryDiskIndex) {
             disk.model.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
                     const material = child.material;
                     if (Array.isArray(material)) {
                         material.forEach(mat => {
-                            mat.color.setHex(0x333333); 
+                            mat.color.setHex(0xffffff); 
                             mat.needsUpdate = true;
                         });
                     } else {
-                        material.color.setHex(0x333333);
+                        material.color.setHex(0xffffff); 
                         material.needsUpdate = true;
                     }
                 }
             });
-            // scaleDownModel(disk.model);
+
+            scaleUpModel(disk.model);
+        } else {
+            disk.model.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    const material = child.material;
+                    if (Array.isArray(material)) {
+                        material.forEach(mat => {
+                            mat.color.setHex(0x333333);
+                            mat.needsUpdate = true;
+                        });
+                    } else {
+                        material.color.setHex(0x333333); 
+                        material.needsUpdate = true;
+                    }
+                }
+            });
+
+            scaleDownModel(disk.model);
         }
     });
 
-    return newAngle; 
+    return newAngle;
 };
 
 const scaleDownModel = (model: THREE.Object3D) => {
-    const scaleFactor = 0.5;
-    model.scale.set(
-        model.scale.x * scaleFactor,
-        model.scale.y * scaleFactor,
-        model.scale.z * scaleFactor
-    );
+    const scaleFactor = 0.65;
+    model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+};
+
+const scaleUpModel = (model: THREE.Object3D) => {
+    const scaleFactor = 1.1;
+    model.scale.set(scaleFactor, scaleFactor, scaleFactor);
 };

@@ -7,6 +7,8 @@ import { handleKeyDown as importedHandleKeyDown } from './handleKeyDown';
 import { loadModels } from '../data/floppyData';
 import { FloppyDisk } from '../types/FloppyDisk';
 
+let activeObjectIndex = 0;
+
 const ThreeModel: React.FC = () => {
     const mountRef = useRef<HTMLDivElement | null>(null);
     const [models, setModels] = useState<FloppyDisk[]>([]);
@@ -43,7 +45,14 @@ const ThreeModel: React.FC = () => {
             });
 
             const keyDownHandler = (event: KeyboardEvent) => {
-                angleRef.current = importedHandleKeyDown(event, loadedModels, radius, angleRef.current);
+
+                if (event.key === 'ArrowRight') {
+                    activeObjectIndex = (activeObjectIndex - 1 + loadedModels.length) % loadedModels.length;
+                } else if (event.key === 'ArrowLeft') {
+                    activeObjectIndex = (activeObjectIndex + 1) % loadedModels.length;
+                }
+
+                angleRef.current = importedHandleKeyDown(event, loadedModels, activeObjectIndex, radius, angleRef.current);
             };
             
 
