@@ -8,10 +8,11 @@ body, html, #root {
   
   .App {
     height: 100%;
+    overflow: hidden;
   }
   
-  .scene {
-    position: fixed; 
+.scene {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -19,8 +20,8 @@ body, html, #root {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(140, 132, 255); 
-  }
+    background-color: rgb(140, 132, 255);
+}
   
   .cube-wrapper {
     transform-style: preserve-3d;
@@ -126,3 +127,18 @@ body, html, #root {
     }
   }
   
+  @keyframes slideUp {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.scene.slide-up {
+    animation: slideUp 1s ease forwards;
+    opacity: 0;
+}

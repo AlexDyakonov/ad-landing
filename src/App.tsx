@@ -5,10 +5,12 @@ import './App.css';
 
 const App: React.FC = () => {
     const [loading, setLoading] = useState(true);
+    const [slideUp, setSlideUp] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setLoading(false);
+            setSlideUp(true);
+            setTimeout(() => setLoading(false), 1000); 
         }, 2000);
 
         return () => clearTimeout(timer);
@@ -16,7 +18,8 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            {loading ? <LoadingScreen /> : <ThreeScene />}
+            {loading && <LoadingScreen className={slideUp ? 'slide-up' : ''} />}
+            <ThreeScene />
         </div>
     );
 }

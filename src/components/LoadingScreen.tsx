@@ -1,9 +1,13 @@
 import React from 'react';
 import './LoadingScreen.css';
 
-const LoadingScreen: React.FC = () => {
+interface LoadingScreenProps {
+    className?: string;
+}
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ className }) => {
     return (
-        <div className="scene">
+        <div className={`scene ${className}`}>
             <div className="cube-wrapper">
                 <div className="cube">
                     <div className="cube-faces">
