@@ -6,7 +6,7 @@ import { handleKeyDown as importedHandleKeyDown } from './handleKeyDown';
 import { loadModels } from '../data/floppyData';
 import { configureScene } from './sceneConfig'; 
 import { FloppyDisk } from '../types/FloppyDisk';
-import * as THREE from 'three';
+import { createTextLabel } from './createTextLabel';
 import LoadingScreen from './LoadingScreen';
 
 
@@ -70,6 +70,17 @@ const ThreeModel: React.FC = () => {
             controls.update();
             renderer.render(scene, camera);
         };
+
+        const textLabel = createTextLabel(`Test\ntest2\ntest3`, {
+            fontSize: 40,
+            maxWidth: 200,
+            color: '#ffffff',
+            rotateAngle:  Math.PI / 2,
+            coordinates: [3.5, 0, 2.6],
+            lineHeight: 0.3
+        });
+
+        scene.add(textLabel);
 
         animate();
 
