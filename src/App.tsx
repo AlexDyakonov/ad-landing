@@ -1,5 +1,6 @@
 import React from 'react';
 import ThreeScene from './components/ThreeScene';
+import './App.css';
 
 const App: React.FC = () => {
     return (
