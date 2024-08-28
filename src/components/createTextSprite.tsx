@@ -19,7 +19,7 @@ export function createTextSprite(text: string, model: THREE.Object3D): THREE.Spr
     context.font = font;
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillStyle = 'rgba(255, 255, 255, 1.0)';
+    context.fillStyle = 'rgba(0, 0, 0, 1.0)';
     context.fillText(text, canvas.width / 2, canvas.height / 2);
 
     const texture = new THREE.Texture(canvas);
