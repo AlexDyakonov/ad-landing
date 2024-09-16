@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ThreeScene from './components/ThreeScene';
 import LoadingScreen from './components/LoadingScreen';
 import './App.css';
+import BackgroundMusic from './components/BackgroundMusic';
 
 const App: React.FC = () => {
     const [loading, setLoading] = useState(true);
@@ -18,6 +19,7 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
+              <BackgroundMusic />
             {loading && <LoadingScreen className={slideUp ? 'slide-up' : ''} />}
             <ThreeScene />
         </div>

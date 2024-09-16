@@ -9,7 +9,6 @@ import { FloppyDisk } from '../types/FloppyDisk';
 import { createTextLabel } from './createTextLabel';
 import LoadingScreen from './LoadingScreen';
 
-
 let activeObjectIndex = 0;
 
 const ThreeModel: React.FC = () => {
